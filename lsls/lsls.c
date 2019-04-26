@@ -32,19 +32,14 @@ int main(int argc, char **argv)
   // Repeatly read and print entries
   while ((entry = readdir(dir)) != NULL)
   {
-    // struct stat buf;
+    struct stat buf;
     char *fullPath = malloc(strlen(dirName) + strlen(entry->d_name) + 1);
-    strcat(fullPath, "/");
     strcat(fullPath, dirName);
+    strcat(fullPath, "/");
     strcat(fullPath, entry->d_name);
-    printf("%s\n", fullPath);
 
-    // strcat(fullPath, entry->d_name);
-    // strcat(fullPath, dirName);
-    // strcat(fullPath, entry->d_name);
-    // printf("%s\n", fullPath);
-    // int fileSize = stat()
-    printf("%s\n", entry->d_name);
+    stat(fullPath, &buf);
+    printf("%zu  %s\n", buf.st_size, entry->d_name);
   }
   // Close directory
   closedir(dir);
