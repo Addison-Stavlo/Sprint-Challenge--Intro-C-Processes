@@ -39,7 +39,15 @@ int main(int argc, char **argv)
     strcat(fullPath, entry->d_name);
 
     stat(fullPath, &buf);
-    printf("%zu  %s\n", buf.st_size, entry->d_name);
+
+    if (buf.st_size == 512)
+    {
+      printf("<DIR>  %s\n", entry->d_name);
+    }
+    else
+    {
+      printf("%zu  %s\n", buf.st_size, entry->d_name);
+    }
   }
   // Close directory
   closedir(dir);
