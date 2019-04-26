@@ -25,27 +25,30 @@ int main(int argc, char **argv)
     perror("cannot open file");
     exit(1);
   }
+
+  // keep track of how many times we read from the directory
   int timesRead = 0;
   struct dirent *entry;
   // Repeatly read and print entries
   while ((entry = readdir(dir)) != NULL)
   {
     timesRead += 1;
+    // struct to store size info
     struct stat buf;
+    // create string of full path to get size info
     char *fullPath = malloc(strlen(dirName) + strlen(entry->d_name) + 1);
     strcat(fullPath, dirName);
     strcat(fullPath, "/");
     strcat(fullPath, entry->d_name);
-
+    // get info from path, store in buf
     if (stat(fullPath, &buf) == -1)
     {
       // some error, move onto next read
       continue;
     }
 
-    if (buf.st_size == 512)
+    if (buf.st_size == 512) // assume directory
     {
-      // directory in original path
       // print out directory name
       printf("<DIR>  %s\n", entry->d_name);
 
@@ -66,10 +69,12 @@ int main(int argc, char **argv)
       // read through the sub directory and print stuff
       while ((subEntry = readdir(subDir)) != NULL)
       {
+        // create string for path to get info
         char *subPath = malloc(strlen(fullPath) + strlen(subEntry->d_name) + 1);
         strcat(subPath, fullPath);
         strcat(subPath, "/");
         strcat(subPath, subEntry->d_name);
+        // get info, store in buf again
         if (stat(subPath, &buf) == -1)
         {
           // some error, move onto next read
@@ -100,7 +105,7 @@ int main(int argc, char **argv)
     }
     else
     {
-      //print file and size
+      // print file from original path
       printf("%zu  %s\n", buf.st_size, entry->d_name);
     }
   }
